@@ -52,17 +52,11 @@ function sortFriends(friends) {
 
     sortedFriends.push(getBestFriend(friends, used, friendsName));
 
-    let notEmpty = true;
-    while (notEmpty) {
+    while (Object.keys(used).length !== Object.keys(friendsName).length) {
         let index = sortedFriends.length - 1;
         let next = takeNextCircle(sortedFriends[index], used, friendsName);
-        if (next.length === 0) {
-            notEmpty = false;
-            continue;
-        }
         sortedFriends.push(next);
     }
-
     for (let circle of sortedFriends) {
         circle.sort(sortInCircle);
     }
@@ -84,7 +78,10 @@ function filterInCircle(filter, circle) {
 function filterFriends(friends, filter) {
     let filteredFriends = [];
     for (let circle of friends) {
-        filteredFriends.push(filterInCircle(filter, circle));
+        let filteredInCircle = filterInCircle(filter, circle);
+        if (filteredInCircle.length !== 0) {
+            filteredFriends.push(filteredInCircle);
+        }
     }
 
     return filteredFriends;
