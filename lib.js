@@ -55,6 +55,9 @@ function sortFriends(friends) {
     while (Object.keys(used).length !== Object.keys(friendsName).length) {
         let index = sortedFriends.length - 1;
         let next = takeNextCircle(sortedFriends[index], used, friendsName);
+        if (next.length === 0) {
+            break;
+        }
         sortedFriends.push(next);
     }
     for (let circle of sortedFriends) {
@@ -104,8 +107,9 @@ function Iterator(friends, filter) {
 }
 
 Iterator.prototype.done = function () {
-    return this.circle === this.sortedFriends.length - 1 &&
-        this.index === this.sortedFriends[this.circle].length;
+    return (this.circle === this.sortedFriends.length - 1 &&
+        this.index === this.sortedFriends[this.circle].length) ||
+        this.sortedFriends.length === 0;
 };
 
 Iterator.prototype.next = function () {

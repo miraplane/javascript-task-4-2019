@@ -101,6 +101,19 @@ const bestFriends = [
     }
 ];
 
+const noBestFriends = [
+    {
+        name: 'Sam',
+        friends: ['Sally'],
+        gender: 'male'
+    },
+    {
+        name: 'Sally',
+        friends: ['Sam'],
+        gender: 'female'
+    }
+];
+
 describe('Итераторы', () => {
     it('должны обойти в правильном порядке друзей и составить пары', () => {
         assert.deepStrictEqual(doFriendList(friends), [
@@ -123,6 +136,10 @@ describe('Итераторы', () => {
             [friend(bestFriends, 'Mat'), friend(bestFriends, 'Alise')],
             [friend(bestFriends, 'Sam'), friend(bestFriends, 'Sally')]
         ]);
+    });
+
+    it('должен корректно обрабатываться случай, когда нет лучших друзей', () => {
+        assert.deepStrictEqual(doFriendList(noBestFriends), []);
     });
 
     function doFriendList(friendList) {
