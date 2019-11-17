@@ -55,9 +55,6 @@ function sortFriends(friends) {
     while (Object.keys(used).length !== Object.keys(friendsName).length) {
         let index = sortedFriends.length - 1;
         let next = takeNextCircle(sortedFriends[index], used, friendsName);
-        if (next.length === 0) {
-            break;
-        }
         sortedFriends.push(next);
     }
     for (let circle of sortedFriends) {
