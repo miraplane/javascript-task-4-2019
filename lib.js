@@ -64,8 +64,8 @@ function getNextCircle(currentCircle, used, friendByName) {
 }
 
 function checkFilter(filter) {
-    if (!(Filter.prototype.isPrototypeOf(filter))) {
-        throw new Error('TypeError');
+    if (!Filter.prototype.isPrototypeOf(filter)) {
+        throw TypeError;
     }
 }
 
@@ -77,7 +77,7 @@ function checkFilter(filter) {
  */
 function Iterator(friends, filter) {
     checkFilter(filter);
-    
+
     this.friends = friends;
     this.filter = filter;
 
