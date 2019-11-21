@@ -185,6 +185,17 @@ describe('Итераторы', () => {
         ]);
     });
 
+
+    it('круг друзей сузили до 0', () => {
+        const filter = new lib.Filter();
+        const iterator = new lib.LimitedIterator(friends, filter, 0);
+        const invitedFriends = [];
+        while (!iterator.done()) {
+            invitedFriends.push(iterator.next());
+        }
+        assert.deepStrictEqual(invitedFriends, []);
+    });
+
     function doFriendList(friendList) {
         const maleFilter = new lib.MaleFilter();
         const femaleFilter = new lib.FemaleFilter();

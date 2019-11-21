@@ -63,6 +63,12 @@ function getNextCircle(currentCircle, used, friendByName) {
     return nextCircle;
 }
 
+function checkFilter(filter) {
+    if (!(Filter.prototype.isPrototypeOf(filter))) {
+        throw new Error('TypeError');
+    }
+}
+
 /**
  * Итератор по друзьям
  * @constructor
@@ -70,6 +76,8 @@ function getNextCircle(currentCircle, used, friendByName) {
  * @param {Filter} filter
  */
 function Iterator(friends, filter) {
+    checkFilter(filter);
+    
     this.friends = friends;
     this.filter = filter;
 
