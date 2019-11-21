@@ -50,6 +50,36 @@ const friends = [
     }
 ];
 
+const otherFriends = [
+    {
+        name: 'Sam',
+        friends: ['Mat'],
+        gender: 'male',
+        best: true
+    },
+    {
+        name: 'Sally',
+        friends: ['Brad'],
+        gender: 'female',
+        best: true
+    },
+    {
+        name: 'Mat',
+        friends: ['Sam'],
+        gender: 'male'
+    },
+    {
+        name: 'Brad',
+        friends: ['Sally', 'Julia'],
+        gender: 'male'
+    },
+    {
+        name: 'Julia',
+        friends: ['Brad'],
+        gender: 'female'
+    }
+];
+
 const newListFriends = [
     {
         name: 'Sam',
@@ -102,6 +132,36 @@ const bestFriends = [
 ];
 
 describe('Итераторы', () => {
+
+    it('объект итератора работает согласно условиям', () => {
+        const filter = new lib.Filter();
+        const iterator = new lib.Iterator(friends, filter);
+
+        const invitedFriends = [];
+        while (!iterator.done()) {
+            invitedFriends.push(iterator.next());
+        }
+        assert.deepStrictEqual(invitedFriends, [
+            friend(friends, 'Sally'), friend(friends, 'Sam'),
+            friend(friends, 'Brad'), friend(friends, 'Emily'),
+            friend(friends, 'Mat'), friend(friends, 'Sharon'),
+            friend(friends, 'Itan'), friend(friends, 'Julia')
+        ]);
+    });
+
+    it('один из уровней оказался пустым', () => {
+        const filter = new lib.FemaleFilter();
+        const iterator = new lib.Iterator(otherFriends, filter);
+
+        const invitedFriends = [];
+        while (!iterator.done()) {
+            invitedFriends.push(iterator.next());
+        }
+        assert.deepStrictEqual(invitedFriends, [
+            friend(otherFriends, 'Sally'), friend(otherFriends, 'Julia')
+        ]);
+    });
+
     it('должны обойти в правильном порядке друзей и составить пары', () => {
         assert.deepStrictEqual(doFriendList(friends), [
             [friend(friends, 'Sam'), friend(friends, 'Sally')],
@@ -114,7 +174,7 @@ describe('Итераторы', () => {
     it('должны обойти в правильном порядке граф с циклом', () => {
         assert.deepStrictEqual(doFriendList(newListFriends), [
             [friend(newListFriends, 'Sam'), friend(newListFriends, 'Alise')],
-            [friend(newListFriends, 'Mat'), friend(newListFriends, 'Sally')]
+            friend(newListFriends, 'Sally')
         ]);
     });
 
