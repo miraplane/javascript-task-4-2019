@@ -65,7 +65,7 @@ function getNextCircle(currentCircle, used, friendByName) {
 
 function checkFilter(filter) {
     if (!Filter.prototype.isPrototypeOf(filter)) {
-        throw TypeError;
+        throw new TypeError();
     }
 }
 
