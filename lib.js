@@ -100,8 +100,15 @@ function Iterator(friends, filter) {
         this.filteredCircle = filterInCircle(this.currentCircle, this.filter);
         this.currentIndex = 0;
     };
+    this.next(true);
+}
+Iterator.prototype = {
+    constructor: Iterator,
+    done() {
+        return this.currentValue === null;
+    },
 
-    this.next = function (initial = false) {
+    next(initial = false) {
         if (this.done()) {
             return this.currentValue;
         }
@@ -124,13 +131,6 @@ function Iterator(friends, filter) {
         if (!initial) {
             return answer;
         }
-    };
-
-    this.next(true);
-}
-Iterator.prototype = {
-    done() {
-        return this.currentValue === null;
     }
 };
 
@@ -147,6 +147,7 @@ function LimitedIterator(friends, filter, maxLevel) {
     this.maxLevel = maxLevel;
 }
 LimitedIterator.prototype = {
+    constructor: LimitedIterator,
     done() {
         return super.done() || this.level > this.maxLevel;
     }
