@@ -182,6 +182,22 @@ describe('Итераторы', () => {
         ]);
     });
 
+    it('должен в правильном порядке обходить циклы', () => {
+        const filter = new lib.Filter();
+        const iterator = new lib.Iterator(newListFriends, filter);
+
+        const invitedFriends = [];
+        while (!iterator.done()) {
+            invitedFriends.push(iterator.next());
+        }
+        assert.deepStrictEqual(invitedFriends, [
+            friend(newListFriends, 'Sam'),
+            friend(newListFriends, 'Alise'),
+            friend(newListFriends, 'Sally'),
+            friend(newListFriends, 'Mat')
+        ]);
+    });
+
 
     it('круг друзей сузили до 0', () => {
         const filter = new lib.Filter();
@@ -190,6 +206,7 @@ describe('Итераторы', () => {
         while (!iterator.done()) {
             invitedFriends.push(iterator.next());
         }
+        assert.deepStrictEqual(iterator.next(), null);
         assert.deepStrictEqual(invitedFriends, []);
     });
 

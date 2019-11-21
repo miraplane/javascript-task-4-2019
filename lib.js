@@ -100,6 +100,12 @@ function Iterator(friends, filter) {
         this.filteredCircle = filterInCircle(this.currentCircle, this.filter);
         this.currentIndex = 0;
     };
+
+    this.updateValue = function (value) {
+        this.currentValue = value;
+        this.currentIndex += 1;
+    };
+
     this.next(true);
 }
 Iterator.prototype = {
@@ -109,12 +115,14 @@ Iterator.prototype = {
 
     next(initial = false) {
         if (this.done()) {
+            this.updateValue(null);
+
             return this.currentValue;
         }
         if (this.currentIndex >= this.filteredCircle.length) {
             if (this.nextCircle.length === 0) {
                 let answer = this.currentValue;
-                this.currentValue = null;
+                this.updateValue(null);
 
                 return answer;
             }
@@ -124,14 +132,14 @@ Iterator.prototype = {
             return this.next();
         }
         let answer = this.currentValue;
-        this.currentValue = this.filteredCircle[this.currentIndex];
-        this.currentIndex += 1;
+        this.updateValue(this.filteredCircle[this.currentIndex]);
 
         if (!initial) {
             return answer;
         }
     }
 };
+Iterator.prototype.constructor = Iterator;
 
 /**
  * Итератор по друзям с ограничением по кругу
@@ -165,6 +173,7 @@ Filter.prototype = {
         return friend[field] === value;
     }
 };
+Filter.prototype.constructor = Filter;
 
 /**
  * Фильтр друзей-парней
