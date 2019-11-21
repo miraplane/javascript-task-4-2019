@@ -103,7 +103,6 @@ function Iterator(friends, filter) {
     this.next(true);
 }
 Iterator.prototype = {
-    constructor: Iterator,
     done() {
         return this.currentValue === null;
     },
@@ -147,11 +146,11 @@ function LimitedIterator(friends, filter, maxLevel) {
     this.maxLevel = maxLevel;
 }
 LimitedIterator.prototype = {
-    constructor: LimitedIterator,
     done() {
         return super.done() || this.level > this.maxLevel;
     }
 };
+LimitedIterator.prototype.constructor = LimitedIterator;
 Object.setPrototypeOf(LimitedIterator.prototype, Iterator.prototype);
 
 /**
@@ -179,6 +178,7 @@ MaleFilter.prototype = {
         return super.filter(friend, 'gender', 'male');
     }
 };
+MaleFilter.prototype.constructor = MaleFilter;
 Object.setPrototypeOf(MaleFilter.prototype, Filter.prototype);
 
 /**
@@ -193,6 +193,7 @@ FemaleFilter.prototype = {
         return super.filter(friend, 'gender', 'female');
     }
 };
+FemaleFilter.prototype.constructor = FemaleFilter;
 Object.setPrototypeOf(FemaleFilter.prototype, Filter.prototype);
 
 exports.Iterator = Iterator;
