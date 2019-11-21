@@ -120,14 +120,12 @@ const bestFriends = [
     {
         name: 'Mat',
         friends: [],
-        gender: 'male',
-        best: true
+        gender: 'male'
     },
     {
         name: 'Alise',
         friends: [],
-        gender: 'female',
-        best: true
+        gender: 'female'
     }
 ];
 
@@ -180,7 +178,6 @@ describe('Итераторы', () => {
 
     it('должны обойти в правильном порядке несвязный граф', () => {
         assert.deepStrictEqual(doFriendList(bestFriends), [
-            [friend(bestFriends, 'Mat'), friend(bestFriends, 'Alise')],
             [friend(bestFriends, 'Sam'), friend(bestFriends, 'Sally')]
         ]);
     });

@@ -112,7 +112,7 @@ Iterator.prototype = {
             return this.currentValue;
         }
         if (this.currentIndex >= this.filteredCircle.length) {
-            if (this.viewFrind.length === this.friends.length) {
+            if (this.nextCircle.length === 0) {
                 let answer = this.currentValue;
                 this.currentValue = null;
 
