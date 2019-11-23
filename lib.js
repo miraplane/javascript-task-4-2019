@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Возвращает словарь: ключ - имя, значение - друг
+ * @param {Array} friends - список друзей
+ * @returns {Object}
+ */
 function getFriendByName(friends) {
     let friendByName = {};
     for (let friend of friends) {
@@ -9,27 +14,33 @@ function getFriendByName(friends) {
     return friendByName;
 }
 
+/**
+ * Возвращает лучших друзей
+ * @param {Array} friends - список всех друзей
+ * @returns {Array}
+ */
 function getBestFriend(friends) {
-    let bestFriend = [];
-    for (let friend of friends) {
-        if (friend.hasOwnProperty('best') && friend.best) {
-            bestFriend.push(friend);
-        }
-    }
-
-    return bestFriend;
+    return friends.filter((friend) => {
+        return friend.hasOwnProperty('best') && friend.best;
+    });
 }
 
-function sortInCircle(first, second) {
-    if (first.name > second.name) {
-        return 1;
-    } else if (second.name > first.name) {
-        return -1;
-    }
-
-    return 0;
+/**
+ * Сравнивает друзей по имени
+ * @param {Object} first - первый друг
+ * @param {Object} second - второй друг
+ * @returns {number}
+ */
+function compareFriends(first, second) {
+    return first.name.localeCompare(second.name);
 }
 
+/**
+ * Фильтрует друзей в круге
+ * @param {Array} circle - круг друзей
+ * @param {Object} filter - фильтр
+ * @returns {Array}
+ */
 function filterInCircle(circle, filter) {
     let filteredInCircle = [];
     for (let friend of circle) {
@@ -41,9 +52,16 @@ function filterInCircle(circle, filter) {
     return filteredInCircle;
 }
 
-function getFriends(friendsName, used, friendByName) {
+/**
+ * Возвращает список друзей
+ * @param {Object} human - человек
+ * @param {Array} used - уже просморенные друзья
+ * @param {Object} friendByName - список всех друзей
+ * @returns {Array}
+ */
+function getFriends(human, used, friendByName) {
     let friends = [];
-    for (let name of friendsName) {
+    for (let name of human.friends) {
         let friend = friendByName[name];
         if (used.indexOf(friend) === -1) {
             friends.push(friend);
@@ -54,15 +72,23 @@ function getFriends(friendsName, used, friendByName) {
     return friends;
 }
 
+/**
+ * Возвращает следующий круг дрзей
+ * @param {Array} currentCircle - текущий круг друзей
+ * @param {Array} used - уже просмотренные друзья
+ * @param {Object} friendByName - список всех дузей
+ * @returns {Array}
+ */
 function getNextCircle(currentCircle, used, friendByName) {
-    let nextCircle = [];
-    for (let current of currentCircle) {
-        nextCircle = nextCircle.concat(getFriends(current.friends, used, friendByName));
-    }
-
-    return nextCircle;
+    return currentCircle.reduce((accumulator, currentValue) => {
+        return accumulator.concat(getFriends(currentValue, used, friendByName));
+    }, []);
 }
 
+/**
+ * Проверяет, что filter является производным конструктора Filter
+ * @param {Object} filter - фильтр
+ */
 function checkFilter(filter) {
     if (!Filter.prototype.isPrototypeOf(filter)) {
         throw new TypeError();
@@ -78,11 +104,10 @@ function checkFilter(filter) {
 function Iterator(friends, filter) {
     checkFilter(filter);
 
-    this.friends = friends;
     this.filter = filter;
-
     this.friendByName = getFriendByName(friends);
-    this.currentCircle = getBestFriend(friends).sort(sortInCircle);
+
+    this.currentCircle = getBestFriend(friends).sort(compareFriends);
     this.level = 1;
     this.viewFrind = [].concat(this.currentCircle);
     this.used = [].concat(this.currentCircle);
@@ -92,23 +117,25 @@ function Iterator(friends, filter) {
     this.currentIndex = 0;
     this.currentValue = undefined;
 
-    this.update = function () {
+    this.next(true);
+}
+Iterator.prototype = {
+    constructor: Iterator,
+
+    goToNextCircle() {
         this.viewFrind = this.viewFrind.concat(this.nextCircle);
-        this.currentCircle = this.nextCircle.sort(sortInCircle);
+        this.currentCircle = this.nextCircle.sort(compareFriends);
         this.level += 1;
         this.nextCircle = getNextCircle(this.currentCircle, this.used, this.friendByName);
         this.filteredCircle = filterInCircle(this.currentCircle, this.filter);
         this.currentIndex = 0;
-    };
+    },
 
-    this.updateValue = function (value) {
+    updateValue(value) {
         this.currentValue = value;
         this.currentIndex += 1;
-    };
+    },
 
-    this.next(true);
-}
-Iterator.prototype = {
     done() {
         return this.currentValue === null;
     },
@@ -126,7 +153,7 @@ Iterator.prototype = {
 
                 return answer;
             }
-            this.update();
+            this.goToNextCircle();
         }
         if (this.filteredCircle.length === 0) {
             return this.next();
@@ -139,7 +166,6 @@ Iterator.prototype = {
         }
     }
 };
-Iterator.prototype.constructor = Iterator;
 
 /**
  * Итератор по друзям с ограничением по кругу
@@ -154,11 +180,11 @@ function LimitedIterator(friends, filter, maxLevel) {
     this.maxLevel = maxLevel;
 }
 LimitedIterator.prototype = {
+    constructor: LimitedIterator,
     done() {
         return super.done() || this.level > this.maxLevel;
     }
 };
-LimitedIterator.prototype.constructor = LimitedIterator;
 Object.setPrototypeOf(LimitedIterator.prototype, Iterator.prototype);
 
 /**
@@ -167,13 +193,12 @@ Object.setPrototypeOf(LimitedIterator.prototype, Iterator.prototype);
  */
 function Filter() {
 }
-
 Filter.prototype = {
+    constructor: Filter,
     filter(friend, field = 'name', value = friend.name) {
         return friend[field] === value;
     }
 };
-Filter.prototype.constructor = Filter;
 
 /**
  * Фильтр друзей-парней
@@ -183,11 +208,11 @@ Filter.prototype.constructor = Filter;
 function MaleFilter() {
 }
 MaleFilter.prototype = {
+    constructo: MaleFilter,
     filter(friend) {
         return super.filter(friend, 'gender', 'male');
     }
 };
-MaleFilter.prototype.constructor = MaleFilter;
 Object.setPrototypeOf(MaleFilter.prototype, Filter.prototype);
 
 /**
@@ -198,11 +223,11 @@ Object.setPrototypeOf(MaleFilter.prototype, Filter.prototype);
 function FemaleFilter() {
 }
 FemaleFilter.prototype = {
+    constructor: FemaleFilter,
     filter(friend) {
         return super.filter(friend, 'gender', 'female');
     }
 };
-FemaleFilter.prototype.constructor = FemaleFilter;
 Object.setPrototypeOf(FemaleFilter.prototype, Filter.prototype);
 
 exports.Iterator = Iterator;
