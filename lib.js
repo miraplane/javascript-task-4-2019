@@ -120,8 +120,6 @@ function Iterator(friends, filter) {
     this.next(true);
 }
 Iterator.prototype = {
-    constructor: Iterator,
-
     goToNextCircle() {
         this.viewFrind = this.viewFrind.concat(this.nextCircle);
         this.currentCircle = this.nextCircle.sort(compareFriends);
@@ -166,6 +164,7 @@ Iterator.prototype = {
         }
     }
 };
+Iterator.prototype.constructor = Iterator;
 
 /**
  * Итератор по друзям с ограничением по кругу
@@ -180,11 +179,11 @@ function LimitedIterator(friends, filter, maxLevel) {
     this.maxLevel = maxLevel;
 }
 LimitedIterator.prototype = {
-    constructor: LimitedIterator,
     done() {
         return super.done() || this.level > this.maxLevel;
     }
 };
+LimitedIterator.prototype.constructor = LimitedIterator;
 Object.setPrototypeOf(LimitedIterator.prototype, Iterator.prototype);
 
 /**
@@ -194,11 +193,11 @@ Object.setPrototypeOf(LimitedIterator.prototype, Iterator.prototype);
 function Filter() {
 }
 Filter.prototype = {
-    constructor: Filter,
     filter(friend, field = 'name', value = friend.name) {
         return friend[field] === value;
     }
 };
+Filter.prototype.constructor = Filter;
 
 /**
  * Фильтр друзей-парней
@@ -208,11 +207,11 @@ Filter.prototype = {
 function MaleFilter() {
 }
 MaleFilter.prototype = {
-    constructo: MaleFilter,
     filter(friend) {
         return super.filter(friend, 'gender', 'male');
     }
 };
+MaleFilter.prototype.constructor = MaleFilter;
 Object.setPrototypeOf(MaleFilter.prototype, Filter.prototype);
 
 /**
@@ -223,11 +222,11 @@ Object.setPrototypeOf(MaleFilter.prototype, Filter.prototype);
 function FemaleFilter() {
 }
 FemaleFilter.prototype = {
-    constructor: FemaleFilter,
     filter(friend) {
         return super.filter(friend, 'gender', 'female');
     }
 };
+FemaleFilter.prototype.constructor = FemaleFilter;
 Object.setPrototypeOf(FemaleFilter.prototype, Filter.prototype);
 
 exports.Iterator = Iterator;
